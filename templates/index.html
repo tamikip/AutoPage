@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI前端生成器</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='logo.png') }}" type="image/x-icon">
+</head>
+<body>
+    <div class="top-placeholder"></div>
+    <div class="content">
+        <h1>请输入希望的前端页面</h1>
+        <form id="inputForm">
+            <input type="text" id="userInput" class="single-line-input" name="userInput" placeholder="在此输入..." required>
+            <input type="submit" value="发送">
+        </form>
+        <textarea id="resultTextarea" class="multi-line-textarea hidden" readonly></textarea>
+        <input type="button" id="sendTextarea" class="hidden" value="生成图片">
+        <h2 id="imageTitle" class="hidden">选择一张图片作为前端</h2>
+        <div id="imageGrid" class="image-grid hidden"></div>
+
+    </div>
+
+    <div id="loadingModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="loader"></div>
+            <p>加载中...</p>
+        </div>
+    </div>
+
+    <div id="successModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h2>生成成功！</h2>
+            <p>页面和图片处理已完成。</p>
+            <button id="closeModalButton">关闭</button>
+            <button id="openwebButton">预览</button>
+            <button id="downloadButton">下载</button>
+        </div>
+    </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const inputForm = document.getElementById("inputForm");
+        const userInputField = document.getElementById("userInput");
+        const resultTextarea = document.getElementById("resultTextarea");
+        const sendButton = document.getElementById("sendTextarea");
+        const imageGrid = document.getElementById("imageGrid");
+        const loadingModal = document.getElementById("loadingModal");
+        const imageTitle = document.getElementById("imageTitle");
+        const successModal = document.getElementById("successModal");
+        const closeModalButton = document.getElementById("closeModalButton");
+        const openwebButton = document.getElementById("openwebButton");
+        const downloadButton = document.getElementById("downloadButton");
+
+        let loadingCount = 0;
+        let pageId = null;  // 用于存储 page_id
+
+        // 显示加载模态框
+        function showLoading() {
+            loadingCount++;
+            loadingModal.style.display = "flex";
+        }
+
+        // 隐藏加载模态框
+        function hideLoading() {
+            loadingCount--;
+            if (loadingCount <= 0) {
+                loadingModal.style.display = "none";
+            }
+        }
+
+        // 监听表单提交事件
+        inputForm.addEventListener("submit", function(event) {
+            event.preventDefault(); // 阻止表单默认提交行为
+
+            showLoading(); // 显示加载模态框
+
+            // 获取用户输入的数据
+            let userInput = userInputField.value;
+
+            // 使用 fetch API 发送 POST 请求到后端
+            fetch('/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ userInput: userInput }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('成功:', data);
+
+                // 通过网页元素显示返回信息
+                resultTextarea.value = data.message;
+                resultTextarea.classList.remove("hidden"); // 显示多行输入框
+                resultTextarea.removeAttribute("readonly"); // 允许用户编辑内容
+
+                // 自动调整 textarea 高度以适应内容
+                resultTextarea.style.height = 'auto';
+                resultTextarea.style.height = resultTextarea.scrollHeight + 'px';
+
+                // 显示发送按钮
+                sendButton.classList.remove("hidden");
+
+                // 清空输入框
+                userInputField.value = '';
+            })
+            .catch((error) => {
+                console.error('错误:', error);
+                alert('请求失败，请稍后重试。');
+            })
+            .finally(() => {
+                hideLoading(); // 关闭加载模态框
+            });
+        });
+
+        // 动态调整 textarea 高度
+        resultTextarea.addEventListener('input', function() {
+            this.style.height = 'auto'; // 重置高度
+            this.style.height = this.scrollHeight + 'px'; // 设置新的高度
+
+            // 如果 textarea 有内容，显示发送按钮；否则隐藏
+            if (resultTextarea.value.trim()) {
+                sendButton.classList.remove("hidden");
+            } else {
+                sendButton.classList.add("hidden");
+            }
+        });
+
+        // 点击发送按钮时获取多行输入框内容
+        sendButton.addEventListener("click", function() {
+            showLoading(); // 显示加载模态框
+
+            let textareaContent = resultTextarea.value;
+
+            // 发送多行输入框内容到后端
+            fetch('/submit-textarea', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ textareaContent: textareaContent }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('成功:', data);
+
+                // 清空旧的图片
+                imageGrid.innerHTML = '';
+
+                // 显示图片
+                const picUrlList = data.pic_url_list;
+                picUrlList.forEach(function(url, index) {
+                    let img = document.createElement('img');
+                    img.src = url;
+                    img.alt = `Generated Image ${index + 1}`;  // 动态设置 alt 属性
+                    img.classList.add('grid-image');  // 添加图片的样式类
+                    imageGrid.appendChild(img);
+
+                    // 添加点击事件监听器
+                    img.addEventListener("click", function() {
+                        handleImageClick(url);
+                    });
+
+                    // 图片加载错误处理
+                    img.onerror = function() {
+                        console.error('图片加载失败:', url);
+                    };
+                });
+
+                // 显示图片网格和标题
+                imageGrid.classList.remove("hidden");
+                imageTitle.classList.remove("hidden");
+            })
+            .catch(error => {
+                console.error('错误:', error);
+                alert('图片加载失败，请稍后重试。');
+            })
+            .finally(() => {
+                hideLoading(); // 关闭加载模态框
+            });
+        });
+
+        // 图片点击处理函数
+        function handleImageClick(url) {
+            console.log("Image clicked, URL:", url);
+
+            showLoading(); // 显示加载模态框
+
+            // 使用 fetch 发送点击的图片 URL 到后端处理
+            fetch('/handle-image-click', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ imageUrl: url }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Image click handled successfully:', data);
+
+                // 保存 page_id
+                pageId = data.page_id;  // 假设后端返回了 page_id
+
+                // 显示成功模态窗口
+                successModal.style.display = "flex";
+            })
+            .catch((error) => {
+                console.error('Error handling image click:', error);
+                alert('图片处理失败，请稍后重试。');
+            })
+            .finally(() => {
+                hideLoading(); // 关闭加载模态框
+            });
+        }
+
+        // 添加关闭按钮事件
+        closeModalButton.addEventListener("click", function() {
+            successModal.style.display = "none";
+        });
+
+        // 打开预览页面
+        openwebButton.addEventListener("click", function() {
+            if (pageId) {
+                window.open(`/preview/${pageId}`, "_blank");
+            } else {
+                alert("无法预览，未生成有效页面。");
+            }
+        });
+
+        // 添加下载按钮事件
+        downloadButton.addEventListener("click", function() {
+            if (!pageId) {
+                alert("无法下载，未生成有效页面。");
+                return;
+            }
+
+            showLoading(); // 显示加载模态框
+
+            // 发送请求到后端处理下载
+            fetch(`/download/${pageId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ download: true })  // 可以发送一些标识数据
+            })
+            .then(response => response.blob())  // 获取文件数据
+            .then(blob => {
+                // 创建一个链接元素，用于下载文件
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${pageId}.zip`;  // 动态设置文件名
+                document.body.appendChild(a);
+                a.click();
+                a.remove();  // 修复：调用 remove() 方法
+            })
+            .catch((error) => {
+                console.error('下载错误:', error);
+                alert('文件下载失败，请稍后重试。');
+            })
+            .finally(() => {
+                hideLoading(); // 关闭加载模态框
+            });
+        });
+    });
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,290 @@
+/* 全局样式 */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: url('background.png'); /* 替换为你的图片URL */
+    background-repeat: repeat; /* 图片重复平铺 */
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh; /* 页面最小高度 */
+    display: flex;
+    flex-direction: column; /* 垂直排列 */
+    justify-content: center; /* 垂直居中对齐 */
+    align-items: center;
+    overflow-y: auto; /* 允许页面垂直滚动 */
+}
+
+
+/* 顶部占位 div 样式 */
+.top-placeholder {
+    height: 50px; /* 可以根据需要调整高度 */
+    width: 100%;
+}
+
+/* 内容区域样式 */
+.content {
+    text-align: center;
+    width: 100%;
+    max-width: 600px;
+    padding: 0 20px;
+}
+
+h1 {
+    font-size: 48px;
+    margin-bottom: 40px;
+    color: #e0e0e0; /* 备用字体颜色，防止渐变不支持时的显示 */
+    background: linear-gradient(45deg, #00bfff, #ffffff); /* 渐变色 */
+    -webkit-background-clip: text; /* 让背景只应用于文字 */
+    -webkit-text-fill-color: transparent; /* 使文字本身透明，显示背景 */
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.2); /* 文字阴影 */
+}
+
+h2 {
+    font-size: 48px;
+    margin-bottom: 80px;
+    margin-top: 60px;
+    color: #e0e0e0; /* 备用字体颜色，防止渐变不支持时的显示 */
+    background: linear-gradient(45deg, #00bfff, #ffffff); /* 渐变色 */
+    -webkit-background-clip: text; /* 让背景只应用于文字 */
+    -webkit-text-fill-color: transparent; /* 使文字本身透明，显示背景 */
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.2); /* 文字阴影 */
+}
+
+
+/* 单行输入框样式 */
+.single-line-input {
+    width: 100%;
+    max-width: 500px;
+    padding: 15px;
+    margin-bottom: 30px;
+    border: none;
+    border-radius: 30px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 18px;
+    outline: none;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.single-line-input::placeholder {
+    color: #b0b0b0;
+}
+
+.single-line-input:focus {
+    background-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+input[type="submit"] {
+    padding: 15px 40px;
+    background-color: #000000; /* 黑色背景 */
+    color: white;
+    border: 2px solid transparent; /* 使用透明边框来配合渐变 */
+    border-radius: 25px; /* 圆角 */
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3); /* 阴影效果 */
+    background-image: linear-gradient(#000000, #000000), /* 背景颜色 */
+                      linear-gradient(45deg, #00bfff, #ffffff); /* 边框的渐变颜色 */
+    background-origin: border-box;
+    background-clip: padding-box, border-box; /* 渐变应用到边框 */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; /* 平滑过渡 */
+}
+
+/* 悬停时的效果 */
+input[type="submit"]:hover {
+    background-image: linear-gradient(#111111, #111111), /* 背景颜色变化 */
+                      linear-gradient(45deg, #00c6ff, #ffffff); /* 渐变边框颜色变化 */
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* 悬停时阴影变亮 */
+}
+
+
+
+
+
+/* 多行输入框样式 */
+.multi-line-textarea {
+    width: 150%;
+    max-width: none;
+    padding: 15px;
+    margin-top: 50px;
+    margin-bottom: 30px;
+    border: none;
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 20px;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    resize: none; /* 禁用手动调整大小，改为自动扩展 */
+    min-height: 150px; /* 定义最小高度 */
+    overflow: hidden; 
+}
+
+/* 添加这个 JS 实现动态高度调整 */
+
+
+.multi-line-textarea.hidden {
+    display: none;
+}
+
+.multi-line-textarea:focus {
+    background-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+/* 模态框样式 */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    text-align: center;
+    font-size:24px;
+    color: white;
+}
+
+.loader {
+    border: 8px solid rgba(255, 255, 255, 0.3);
+    border-top: 8px solid white;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+/* 新的发送按钮样式 */
+#sendTextarea {
+    padding: 15px 40px;
+    background-color: #000000; /* 黑色背景 */
+    color: white;
+    border: 2px solid transparent; /* 使用透明边框来配合渐变 */
+    border-radius: 25px; /* 圆角 */
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3); /* 阴影效果 */
+    background-image: linear-gradient(#000000, #000000), /* 背景颜色 */
+                      linear-gradient(45deg, #00bfff, #ffffff); /* 边框的渐变颜色 */
+    background-origin: border-box;
+    background-clip: padding-box, border-box; /* 渐变应用到边框 */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; /* 平滑过渡 */
+}
+
+
+
+#sendTextarea:hover {
+    background-image: linear-gradient(#111111, #111111), /* 背景颜色变化 */
+                      linear-gradient(45deg, #00c6ff, #ffffff); /* 渐变边框颜色变化 */
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* 悬停时阴影变亮 */
+}
+
+#sendTextarea.hidden {
+    display: none;
+}
+
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 50px; /* 图片间距 */
+    margin-top: 100px; /* 适当的间距，根据实际情况调整 */
+    margin-bottom: 100px
+    justify-items: center; /* 图片水平居中 */
+    width: 280%; /* 容器宽度占满父容器 */
+    max-width: none; /* 最大宽度可根据需要调整 */
+    margin: 0 auto; /* 居中显示 */
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+
+/* 图片样式 */
+.grid-image {
+    width: 100%;
+    max-width: 800px;  /* 图片最大宽度 */
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.grid-image:hover {
+    transform: scale(1.03);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+
+/* 隐藏的类 */
+.hidden {
+    display: none;
+}
+#successModal .modal-content {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 30px;
+    text-align: center;
+    color: #333; /* 调整文本颜色，以便与浅背景形成对比 */
+    width: 40%;
+    font-size: 24px;
+}
+
+#successModal h2 {
+    margin-bottom: 20px;
+    color: #000; /* 调整标题颜色 */
+}
+
+#closeModalButton {
+    margin:20px 20px;
+    padding: 10px 20px;
+    background-color: #ffffff; /* 按钮背景改为白色 */
+    color: #000; /* 按钮文本颜色 */
+    border: 2px solid #ddd; /* 边框颜色 */
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+#openwebButton {
+    margin:20px 20px;
+    padding: 10px 20px;
+    background-color: #0080ff; /* 按钮背景改为白色 */
+    color: #ffffff; /* 按钮文本颜色 */
+    border: 2px solid #ddd; /* 边框颜色 */
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+#downloadButton {
+    margin:20px 20px;
+    padding: 10px 20px;
+    background-color: #008B00;
+    color: #ffffff; /* 按钮文本颜色 */
+    border: 2px solid #ddd; /* 边框颜色 */
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
