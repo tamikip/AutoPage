@@ -11,14 +11,14 @@ import os
 import shutil
 
 threads = []
-online_draw_key = "0d2977d8d84048f5a8102fdd5c7ddd1d"
+online_draw_key = "xxx"
 url = "https://cn.tensorart.net/v1/jobs"
 tams_headers = {
     "Content-Type": "application/json; charset=UTF-8",
     "Authorization": f"Bearer {online_draw_key}"
 }
 pic_url_list = []
-key = "sk-Lf7dN6r59Dv9KvHM4b353a777a6247F7Bd4729C6B0E87a28"
+key = "xxxx"
 headers = {
     'Accept': 'application/json',
     'Authorization': f'Bearer {key}',
