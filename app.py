@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, render_template, send_from_directory, send_file
-from main import *
+from utils import *
 
 app = Flask(__name__)
 
@@ -11,19 +11,13 @@ def index():
 
 @app.route('/handle-image-click', methods=['POST'])
 def handle_image_click():
-    global page_id
     page_id = str(random.randint(10 ** 11, 10 ** 12 - 1))
     data = request.get_json()
     image_url = data.get('imageUrl')
-    data = gpt2(image_url)
+    data = gpt_pic(image_url)
     html = extract_python_code(data, "html")
     css = extract_python_code(data, "css")
     os.makedirs(page_id)
-    with open(f'{page_id}/index.html', 'w', encoding='utf-8') as file:
-        file.write(html)
-    with open(f'{page_id}/styles.css', 'w', encoding='utf-8') as file:
-        file.write(css)
-    merge_html_css(f'{page_id}/index.html', f'{page_id}/styles.css', f"{page_id}/full_index.html")
     png_json = gpt(
         "找出html里面所有的png图片，给这个图片合适的大小(一定要给一个数字)，返回json格式{'images':[{'pic_name':'图片的名字.png','describe':'图片英文的描述',"
         "'width':'图片在html中的宽度像素(纯数字)','height':'图片在html中的高度像素(纯数字)'}，{以此类推...}]}",
@@ -34,6 +28,18 @@ def handle_image_click():
         start_online_draw_threads(obj['describe'], f'{page_id}/{obj["pic_name"]}'.removesuffix(".png"), "static",
                                   obj['width'],
                                   obj['height'])
+
+    """通过gpt再次优化页面布局"""
+    data2 = gpt("我的网页不是很美观，请你帮我优化一下布局，并让html的文字全部变得正常合理", html + css)
+    html = extract_python_code(data2, "html")
+    css = extract_python_code(data2, "css")
+
+    with open(f'{page_id}/index.html', 'w', encoding='utf-8') as file:
+        file.write(html)
+    with open(f'{page_id}/styles.css', 'w', encoding='utf-8') as file:
+        file.write(css)
+    merge_html_css(f'{page_id}/index.html', f'{page_id}/styles.css', f"{page_id}/full_index.html")
+
     for thread in threads:
         thread.join()
 
@@ -73,11 +79,7 @@ def preview(page_id):
 @app.route('/download/<page_id>', methods=['POST'])
 def download_file(page_id):
     zip_folder(page_id)
-
-    try:
-        return send_file(f'{page_id}.zip', as_attachment=True)
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    return send_file(f'{page_id}.zip', as_attachment=True)
 
 
 if __name__ == '__main__':
