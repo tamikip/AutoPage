@@ -139,4 +139,3 @@ ArtPromptAI/
 ## 许可证
 
 本项目使用 [MIT 许可证](LICENSE)。
-```
