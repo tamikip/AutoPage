@@ -211,5 +211,3 @@ def merge_html_css(html_file, css_file, output_file):
     )
     with open(output_file, 'w', encoding='utf-8') as file:
         file.write(merged_content)
-
-print(base_url)
