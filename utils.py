@@ -9,6 +9,15 @@ import shutil
 import configparser
 
 config = configparser.ConfigParser()
+
+config["config"] = {
+    "gpt_url": os.environ.get("GPT_URL", ""),
+    "gpt_key": os.environ.get("GPT_KEY", ""),
+    "draw_key": os.environ.get("DRAW_KEY", "")
+}
+
+with open("config.ini", "w") as configfile:
+    config.write(configfile)
 config.read('config.ini')
 
 base_url = config.get("config", "gpt_url")
