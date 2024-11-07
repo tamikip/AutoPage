@@ -6,29 +6,18 @@ import threading
 import random
 import os
 import shutil
-import configparser
 
-config = configparser.ConfigParser()
-config["config"] = {
-    "gpt_url": os.environ.get("GPT_URL", ""),
-    "gpt_key": os.environ.get("GPT_KEY", ""),
-    "draw_key": os.environ.get("DRAW_KEY", "")
-}
-with open("config.ini", "w") as configfile:
-    config.write(configfile)
+gpt_url = os.environ.get("GPT_URL", "")
+gpt_key = os.environ.get("GPT_KEY", "")
+draw_key = os.environ.get("DRAW_KEY", "")
 
-config.read('config.ini')
-
-base_url = config.get("config", "gpt_url")
 threads = []
-online_draw_key = config.get("config", "draw_key")
 url = "https://cn.tensorart.net/v1/jobs"
 tams_headers = {
     "Content-Type": "application/json; charset=UTF-8",
     "Authorization": f"Bearer {online_draw_key}"
 }
 pic_url_list = []
-key = config.get("config", "gpt_key")
 headers = {
     'Accept': 'application/json',
     'Authorization': f'Bearer {key}',
