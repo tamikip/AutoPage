@@ -20,7 +20,7 @@ tams_headers = {
 pic_url_list = []
 headers = {
     'Accept': 'application/json',
-    'Authorization': f'Bearer {key}',
+    'Authorization': f'Bearer {gpt_key}',
     'Content-Type': 'application/json'
 }
 
