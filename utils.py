@@ -7,7 +7,7 @@ import random
 import os
 import shutil
 
-gpt_url = os.environ.get("GPT_URL", "")
+base_url = os.environ.get("GPT_URL", "")
 gpt_key = os.environ.get("GPT_KEY", "")
 online_draw_key = os.environ.get("DRAW_KEY", "")
 
