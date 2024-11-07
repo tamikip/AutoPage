@@ -9,7 +9,7 @@ import shutil
 
 gpt_url = os.environ.get("GPT_URL", "")
 gpt_key = os.environ.get("GPT_KEY", "")
-draw_key = os.environ.get("DRAW_KEY", "")
+online_draw_key = os.environ.get("DRAW_KEY", "")
 
 threads = []
 url = "https://cn.tensorart.net/v1/jobs"
@@ -24,8 +24,6 @@ headers = {
     'Content-Type': 'application/json'
 }
 
-config = configparser.ConfigParser()
-config.read('config.ini')
 
 
 def zip_folder(name):
